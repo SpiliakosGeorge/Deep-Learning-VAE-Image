@@ -2,7 +2,8 @@ import torch
 from Autoencoder import Autoencoder
 from VAE import VAE
 from torch import nn
-from Dataloader import *
+#from Dataloader import *
+from FashionDataloader import *
 import torch.nn.functional as F
 
 
@@ -10,11 +11,11 @@ import torch.nn.functional as F
 
 
 def train_single_epoch(model, data_loader, loss_fn, optimiser, reconstruction_term_weight = 1, device = 'cpu'):
-    for input, _, _, _ in data_loader:
+    for input, _ in data_loader:
         input = input.to(device)
 
         encoded, z_mean, z_log_var, decoded = model(input)
-        print(model.final_linear.weight.grad)
+        # print(model.final_linear.weight.grad)
         # calculate loss
         # total loss = reconstruction loss + KL divergence
         #kl_divergence = (0.5 * (z_mean**2 + 
@@ -59,12 +60,17 @@ if __name__ == "__main__":
         device = "cpu"
     print(f"Using {device}")
 
-    
-    
+    BATCH_SIZE = 18
+    LATENT_DIM = 10
+    DIM_1 = 28
+    DIM_2 = 28
+    LEARNING_RATE = 0.001
+    EPOCHS = 10
+
  
     #train_dataloader = create_data_loader(md, BATCH_SIZE)
     
-    train_dataloader = DataLoader(dataset=md, batch_size=BATCH_SIZE)
+    train_dataloader, _ = get_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)
 
     # construct model and assign it to device
     
