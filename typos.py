@@ -56,3 +56,4 @@ def typos3(DIM_1, DIM_2):
     dim2 = math.floor(((dim2 + 2 * 1 - 3) / 1)) + 1  # (input_dimension + 2* padding)/stride + 1
 
     return dim2
+
