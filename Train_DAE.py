@@ -2,17 +2,20 @@ import torch
 from Autoencoder import Autoencoder
 from VAE import VAE
 from torch import nn
-#from Dataloader import *
 from FashionDataloader import *
 import torch.nn.functional as F
+#from GaussianNoise import *
 
 
 
 
 
 def train_single_epoch(model, data_loader, loss_fn, optimiser, reconstruction_term_weight = 1, device = 'cpu'):
-    for input, _ in data_loader:
+    #for input, _ in data_loader:
+    for batch_idx, (input, _) in enumerate(data_loader):
+        print(batch_idx)
         input = input.to(device)
+        original = get_FashionMNIST_dataloaders(18)[0]
 
         encoded, z_mean, z_log_var, decoded = model(input)
         # print(model.final_linear.weight.grad)
@@ -28,7 +31,7 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser, reconstruction_te
         batchsize = kl_div.size(0)
         kl_div = kl_div.mean() # average over batch dimension
 
-        pixelwise = loss_fn(decoded, input, reduction='none')
+        pixelwise = loss_fn(decoded, original, reduction='none')
         pixelwise = pixelwise.view(batchsize, -1).sum(axis=1) # sum over pixels
         pixelwise = pixelwise.mean() # average over batch dimension
         
@@ -70,7 +73,7 @@ if __name__ == "__main__":
  
     #train_dataloader = create_data_loader(md, BATCH_SIZE)
     
-    train_dataloader, _ = get_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)
+    train_dataloader, _ = get_noisy_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)
 
     # construct model and assign it to device
     
