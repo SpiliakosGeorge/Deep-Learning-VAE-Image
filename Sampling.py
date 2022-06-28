@@ -15,7 +15,7 @@ import torch
 
 
 
-FILE = 'DAE.pth'
+FILE = 'feedforwardnet.pth'
 model = VAE(latent_dim=10, dim1=28, dim2=28)
 model.load_state_dict(torch.load(FILE))
 model.eval()
@@ -27,7 +27,6 @@ L = []
 for input, _ in train_dataloader:
     with torch.no_grad():
         latent = model.encoding_fn(input)
-
         latent.squeeze_(0)
         latent.squeeze_(0)
         L.append(latent)
