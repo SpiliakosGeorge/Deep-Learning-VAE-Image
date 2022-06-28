@@ -70,11 +70,11 @@ if __name__ == "__main__":
     print(f"Using {device}")
 
     BATCH_SIZE = 18
-    LATENT_DIM = 2
+    LATENT_DIM = 10
     DIM_1 = 28
     DIM_2 = 28
     LEARNING_RATE = 0.001
-    EPOCHS = 1
+    EPOCHS = 10
 
     root = "./data"
  
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     
 
     # save model
-    #torch.save(autoencoder.state_dict(), "feedforwardnet.pth")
+    torch.save(autoencoder.state_dict(), "DAE.pth")
     #print("Trained autoencoder saved at feedforwardnet.pth")
