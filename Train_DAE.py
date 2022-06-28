@@ -1,14 +1,15 @@
 import torch
 from Autoencoder import Autoencoder
-from GaussianNoise import add_noise
 from VAE import VAE
 from torch import nn
 from FashionDataloader import *
 import torch.nn.functional as F
-#from GaussianNoise import *
 
 
 
+
+def add_noise(tensor, mean, std):
+    return tensor + torch.randn(tensor.size()) * std + mean
 
 
 def train_single_epoch(model, data_loader, loss_fn, optimiser,
