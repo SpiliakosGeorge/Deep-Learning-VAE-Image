@@ -12,3 +12,7 @@ class AddGaussianNoise(object):
     def __repr__(self):
         return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)
 
+
+def add_noise(tensor, mean, std):
+    return tensor + torch.randn(tensor.size()) * std + mean
+

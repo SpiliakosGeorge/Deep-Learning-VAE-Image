@@ -3,7 +3,8 @@ import torchvision
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
 from torchvision import transforms
-from GaussianNoise import AddGaussianNoise
+from FashionDataloader import *
+from GaussianNoise import *
 
 
 def get_FashionMNIST_dataloaders(batch_size):
@@ -20,7 +21,7 @@ def get_FashionMNIST_dataloaders(batch_size):
 
     return train_loader, test_loader
 
-
+'''
 def get_noisy_FashionMNIST_dataloaders(batch_size, mean, std):
 
     train_transform = transforms.Compose([transforms.ToTensor(), AddGaussianNoise(mean,std)])
@@ -36,7 +37,7 @@ def get_noisy_FashionMNIST_dataloaders(batch_size, mean, std):
     return train_loader, test_loader
 
 corrupted_images_dloader_train = get_noisy_FashionMNIST_dataloaders(18, 0, 0.2)[0]
-
+'''
 def plot_dataloader(dataloader, index=0):
 
     train_features, train_labels = next(iter(dataloader))
@@ -47,6 +48,7 @@ def plot_dataloader(dataloader, index=0):
     plt.imshow(img, cmap="gray")
     plt.show()
     print(f"Label: {label}")
+
 
 
 

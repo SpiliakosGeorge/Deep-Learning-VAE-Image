@@ -1,5 +1,6 @@
 import torch
 from Autoencoder import Autoencoder
+from GaussianNoise import add_noise
 from VAE import VAE
 from torch import nn
 from FashionDataloader import *
@@ -10,14 +11,18 @@ import torch.nn.functional as F
 
 
 
-def train_single_epoch(model, data_loader, loss_fn, optimiser, reconstruction_term_weight = 1, device = 'cpu'):
-    #for input, _ in data_loader:
-    for batch_idx, (input, _) in enumerate(data_loader):
-        print(batch_idx)
-        input = input.to(device)
-        original = get_FashionMNIST_dataloaders(18)[0]
+def train_single_epoch(model, data_loader, loss_fn, optimiser,
+reconstruction_term_weight = 1,
+device = 'cpu'):
+    for original, _ in data_loader:
+    
+        original = original.to(device)
+        noisy_input = add_noise(original, 0, 0.2)
+        
 
-        encoded, z_mean, z_log_var, decoded = model(input)
+
+
+        encoded, z_mean, z_log_var, decoded = model(noisy_input)
         # print(model.final_linear.weight.grad)
         # calculate loss
         # total loss = reconstruction loss + KL divergence
@@ -64,16 +69,17 @@ if __name__ == "__main__":
     print(f"Using {device}")
 
     BATCH_SIZE = 18
-    LATENT_DIM = 10
+    LATENT_DIM = 2
     DIM_1 = 28
     DIM_2 = 28
     LEARNING_RATE = 0.001
-    EPOCHS = 10
+    EPOCHS = 1
 
+    root = "./data"
  
     #train_dataloader = create_data_loader(md, BATCH_SIZE)
     
-    train_dataloader, _ = get_noisy_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)
+    train_dataloader = get_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)[0]
 
     # construct model and assign it to device
     
