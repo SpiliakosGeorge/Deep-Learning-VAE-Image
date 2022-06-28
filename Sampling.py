@@ -15,7 +15,7 @@ import torch
 
 
 
-FILE = 'feedforwardnet.pth'
+FILE = 'DAE.pth'
 model = VAE(latent_dim=10, dim1=28, dim2=28)
 model.load_state_dict(torch.load(FILE))
 model.eval()
