@@ -99,7 +99,7 @@ def plot_generated_images(data_loader, model, device,
         break
 
     for i in range(n_images):
-        for ax, img in zip(axes, [orig_images, noisy_images, decoded_images, ]):
+        for ax, img in zip(axes, [orig_images, noisy_images, decoded_images]):
             curr_img = img[i].detach().to(torch.device('cpu'))        
             if unnormalizer is not None:
                 curr_img = unnormalizer(curr_img)
