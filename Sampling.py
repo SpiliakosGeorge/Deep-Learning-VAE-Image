@@ -40,6 +40,3 @@ with torch.no_grad():
     plt.show()
 
 
-
-save_dir = './data/sampling/'
-save_path = os.path.join(save_dir + "test.wav")
