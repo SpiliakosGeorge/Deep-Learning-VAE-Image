@@ -1,5 +1,4 @@
 import torch.nn.functional as F
-
 from FashionDataloader import *
 from VAE import VAE
 

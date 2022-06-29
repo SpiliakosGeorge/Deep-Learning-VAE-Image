@@ -2,12 +2,34 @@ from VAE import VAE
 from FashionDataloader import *
 import torch.nn.functional as F
 
+def add_noise(tensor, mean, std):
+    return tensor + torch.randn(tensor.size()) * std + mean
+
 
 def train_single_epoch(model, data_loader, loss_fn, optimiser, device='cpu'):
-    for input, _ in data_loader:
-        input = input.to(device)
+    FILE = 'DAE.pth'
+    DAE = VAE(latent_dim=10, dim1=28, dim2=28)
+    DAE.load_state_dict(torch.load(FILE))
+    DAE.eval()
+    for original, _ in data_loader:
+        original = original.to(device)
 
-        encoded, z_mean, z_log_var, decoded = model(input)
+        # adding gaussian noise to original data
+        noisy_input = add_noise(original, 0, 0.2)
+        noisy_input = noisy_input.to(device)
+
+        clean = add_noise(original, 0, 0.2)
+        clean = clean.to(device)
+
+        # inference DAE
+        with torch.no_grad():
+            latent = DAE.encoding_fn(noisy_input)
+            for i in range(len(noisy_input)):
+                #overwriting
+                clean[i] = DAE.decoder(torch.tensor(latent[i]).to(device))
+
+
+        encoded, z_mean, z_log_var, generated = model(clean)
 
 
         # calculate loss
@@ -19,7 +41,7 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser, device='cpu'):
         batchsize = kl_div.size(0)
         kl_div = kl_div.mean()  # average over batch dimension
 
-        pixelwise = loss_fn(decoded, input, reduction='none')
+        pixelwise = loss_fn(generated, clean, reduction='none')
         pixelwise = pixelwise.view(batchsize, -1).sum(axis=1)  # sum over pixels
         pixelwise = pixelwise.mean()  # average over batch dimension
 
