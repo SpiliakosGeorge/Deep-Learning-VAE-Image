@@ -16,7 +16,17 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser,
 reconstruction_term_weight = 1,
 device = 'cpu'):
     for original, _ in data_loader:
-    
+        with torch.no_grad():
+            latent = model.encoding_fn(original)
+        for i in range(len(original)):
+            print(original[i])
+            original[i] = model.decoder(torch.tensor(latent[i]).to('cpu'))
+            print(original[i])
+            break
+        print(original[0])
+        break
+
+
         original = original.to(device)
         noisy_input = add_noise(original, 0, 0.2)
         
