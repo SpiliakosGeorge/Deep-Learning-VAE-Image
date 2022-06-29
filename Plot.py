@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 
+def add_noise(tensor, mean, std):
+    return tensor + torch.randn(tensor.size()) * std + mean
+
 def plot_latent_space_with_labels(num_classes, data_loader, encoding_fn, device):
     d = {i:[] for i in range(num_classes)}
 
@@ -77,6 +80,7 @@ def plot_generated_images(data_loader, model, device,
     for batch_idx, (features, _) in enumerate(data_loader):
         
         features = features.to(device)
+        noisy =  add_noise(features, 0, 0.2)
 
         color_channels = features.shape[1]
         image_height = features.shape[2]
@@ -91,10 +95,11 @@ def plot_generated_images(data_loader, model, device,
                 raise ValueError('`modeltype` not supported')
 
         orig_images = features[:n_images]
+        noisy_images = noisy[:n_images]
         break
 
     for i in range(n_images):
-        for ax, img in zip(axes, [orig_images, decoded_images]):
+        for ax, img in zip(axes, [orig_images, noisy_images, decoded_images, ]):
             curr_img = img[i].detach().to(torch.device('cpu'))        
             if unnormalizer is not None:
                 curr_img = unnormalizer(curr_img)
