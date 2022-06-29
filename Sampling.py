@@ -1,18 +1,6 @@
-import os
-
-import matplotlib.pyplot as plt
 from VAE import *
 from FashionDataloader import *
 import torch
-
-#TODO remove comments
-#from Spectrogram import *
-#import soundfile as sf
-#from Dataset import *
-#from Dataloader import *
-#import torch.nn as nn
-
-
 
 
 FILE = 'feedforwardnet.pth'
@@ -31,7 +19,7 @@ for input, _ in train_dataloader:
         latent.squeeze_(0)
         L.append(latent)
 
-#print(L[0].tolist()[1])
+
 with torch.no_grad():
     new_image = model.decoder(torch.tensor(L[2].tolist()[1]).to('cpu'))
     new_image.squeeze_(0)

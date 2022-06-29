@@ -1,5 +1,4 @@
 import numpy as np
-import os
 import torch
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors

@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from typos import *
-#from torchsummary import summary
+
 
 
 
@@ -62,7 +62,7 @@ class Autoencoder(nn.Module):
         
         self.final_linear = nn.Linear(typos(self.dim1,self.dim2), self.latent_dim)
         self.decoder = nn.Sequential(
-            torch.nn.Linear(self.latent_dim, typos(self.dim1,self.dim2)),
+            torch.nn.Linear(self.latent_dim, typos(self.dim1, self.dim2)),
             Reshape(-1, 64, typos2(self.dim1, self.dim2), typos3(self.dim1, self.dim2)),
             nn.ConvTranspose2d(64, 64, stride=(1, 1), kernel_size=(3, 3), padding=1),
             nn.LeakyReLU(0.01),

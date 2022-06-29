@@ -1,22 +1,16 @@
-import torch
-from Autoencoder import Autoencoder
 from VAE import VAE
-from torch import nn
-# from Dataloader import *
 from FashionDataloader import *
 import torch.nn.functional as F
 
 
-def train_single_epoch(model, data_loader, loss_fn, optimiser, reconstruction_term_weight=1, device='cpu'):
+def train_single_epoch(model, data_loader, loss_fn, optimiser, device='cpu'):
     for input, _ in data_loader:
         input = input.to(device)
 
         encoded, z_mean, z_log_var, decoded = model(input)
-        # print(model.final_linear.weight.grad)
+
+
         # calculate loss
-        # total loss = reconstruction loss + KL divergence
-        # kl_divergence = (0.5 * (z_mean**2 +
-        #                        torch.exp(z_log_var) - z_log_var - 1)).sum()
         kl_div = -0.5 * torch.sum(1 + z_log_var
                                   - z_mean ** 2
                                   - torch.exp(z_log_var),
@@ -29,7 +23,6 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser, reconstruction_te
         pixelwise = pixelwise.view(batchsize, -1).sum(axis=1)  # sum over pixels
         pixelwise = pixelwise.mean()  # average over batch dimension
 
-        # loss = reconstruction_term_weight*pixelwise + kl_div
         loss = pixelwise + kl_div
 
         # backpropagate error and update weights
@@ -62,23 +55,19 @@ if __name__ == "__main__":
     LEARNING_RATE = 0.001
     EPOCHS = 10
 
-    # train_dataloader = create_data_loader(md, BATCH_SIZE)
 
     train_dataloader, _ = get_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)
 
     # construct model and assign it to device
-
     autoencoder = VAE(latent_dim=LATENT_DIM, dim1=DIM_1, dim2=DIM_2).to(device)
     print(autoencoder)
 
     # initialise loss funtion + optimiser
     loss_fn = F.mse_loss
-    optimiser = torch.optim.Adam(autoencoder.parameters(),
-                                 lr=LEARNING_RATE)
+    optimiser = torch.optim.Adam(autoencoder.parameters(), lr=LEARNING_RATE)
 
     # train model
     train(autoencoder, train_dataloader, loss_fn, optimiser, EPOCHS, device)
 
     # save model
-    # torch.save(autoencoder.state_dict(), "feedforwardnet.pth")
-    # print("Trained autoencoder saved at feedforwardnet.pth")
+    torch.save(autoencoder.state_dict(), "GAE.pth")
