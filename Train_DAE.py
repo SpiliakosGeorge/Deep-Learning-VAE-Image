@@ -79,4 +79,4 @@ if __name__ == "__main__":
     train(autoencoder, train_dataloader, loss_fn, optimiser, EPOCHS, device)
 
     # save model
-    torch.save(autoencoder.state_dict(), "DAE.pth")
+    torch.save(autoencoder.state_dict(), "DAE_10e_10lat.pth")
