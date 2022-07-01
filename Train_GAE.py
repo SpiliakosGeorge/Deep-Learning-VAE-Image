@@ -71,11 +71,11 @@ if __name__ == "__main__":
     print(f"Using {device}")
 
     BATCH_SIZE = 18
-    LATENT_DIM = 250
+    LATENT_DIM = 10
     DIM_1 = 28
     DIM_2 = 28
     LEARNING_RATE = 0.001
-    EPOCHS = 20
+    EPOCHS = 10
 
 
     train_dataloader, _ = get_FashionMNIST_dataloaders(batch_size=BATCH_SIZE)
@@ -92,4 +92,4 @@ if __name__ == "__main__":
     train(autoencoder, train_dataloader, loss_fn, optimiser, EPOCHS, device)
 
     # save model
-    torch.save(autoencoder.state_dict(), "GAE_20e_250lat.pth")
+    torch.save(autoencoder.state_dict(), "GAE_20e_10lat.pth")
