@@ -18,7 +18,7 @@ Firstly we use a VAE model trained for denoising images with Gaussian noise and 
 6. typos.py
 	- Consists of methods used to calculate the model parameters according to `(input_dimension + 2 * padding)/stride + 1` formula.
 7. VAE.py
-	-
+	- a
 8. Visual.ipynb
 	- Is the presentation of the results of the inferences.
 
