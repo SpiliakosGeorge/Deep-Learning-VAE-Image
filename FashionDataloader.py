@@ -21,7 +21,7 @@ def get_FashionMNIST_dataloaders(batch_size):
 
     return train_loader, test_loader
 
-
+# TODO remove plot_dataloader?
 
 def plot_dataloader(dataloader, index=0):
 
