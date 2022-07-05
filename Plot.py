@@ -2,6 +2,10 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from VAE import *
+
+
+
 
 
 def add_noise(tensor, mean, std):
@@ -70,10 +74,13 @@ def plot_images_sampled_from_vae(model, device, latent_size, unnormalizer=None, 
                 ax.imshow(curr_img.view((image_height, image_width)), cmap='binary') 
 
 
-def plot_generated_images(data_loader, model, device, 
+def plot_generated_images(data_loader, model, device, file = 'DAE.pth', 
                           unnormalizer=None,
                           figsize=(20, 2.5), n_images=15, modeltype='autoencoder'):
-
+    
+    model_dae = VAE(latent_dim=10, dim1=28, dim2=28)
+    model_dae.load_state_dict(torch.load(file))
+    model_dae.eval()
     fig, axes = plt.subplots(nrows=2, ncols=n_images, 
                              sharex=True, sharey=True, figsize=figsize)
     
@@ -91,21 +98,35 @@ def plot_generated_images(data_loader, model, device,
                 decoded_images = model(features)[:n_images]
             elif modeltype == 'VAE':
                 encoded, z_mean, z_log_var, decoded_images = model(features)[:n_images]
+            elif modeltype == 'GAE':
+                encoded, z_mean, z_log_var, decoded_images = model_dae(features)[:n_images]
             else:
                 raise ValueError('`modeltype` not supported')
 
         orig_images = features[:n_images]
         noisy_images = noisy[:n_images]
         break
+    if modeltype == 'VAE':
+        for i in range(n_images):
+            for ax, img in zip(axes, [orig_images, noisy_images, decoded_images]):
+                curr_img = img[i].detach().to(torch.device('cpu'))        
+                if unnormalizer is not None:
+                    curr_img = unnormalizer(curr_img)
 
-    for i in range(n_images):
-        for ax, img in zip(axes, [orig_images, noisy_images, decoded_images]):
-            curr_img = img[i].detach().to(torch.device('cpu'))        
-            if unnormalizer is not None:
-                curr_img = unnormalizer(curr_img)
+                if color_channels > 1:
+                    curr_img = np.transpose(curr_img, (1, 2, 0))
+                    ax[i].imshow(curr_img)
+                else:
+                    ax[i].imshow(curr_img.view((image_height, image_width)), cmap='binary')
+    elif modeltype == 'GAE':
+        for i in range(n_images):
+            for ax, img in zip(axes, [orig_images, decoded_images]):
+                curr_img = img[i].detach().to(torch.device('cpu'))        
+                if unnormalizer is not None:
+                    curr_img = unnormalizer(curr_img)
 
-            if color_channels > 1:
-                curr_img = np.transpose(curr_img, (1, 2, 0))
-                ax[i].imshow(curr_img)
-            else:
-                ax[i].imshow(curr_img.view((image_height, image_width)), cmap='binary')
+                if color_channels > 1:
+                    curr_img = np.transpose(curr_img, (1, 2, 0))
+                    ax[i].imshow(curr_img)
+                else:
+                    ax[i].imshow(curr_img.view((image_height, image_width)), cmap='binary')
