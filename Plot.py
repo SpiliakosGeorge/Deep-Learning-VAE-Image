@@ -107,8 +107,9 @@ def plot_generated_images(data_loader, model, device, file = 'DAE.pth',
         noisy_images = noisy[:n_images]
         break
     if modeltype == 'VAE':
+        '''
         for i in range(n_images):
-            for ax, img in zip(axes, [orig_images, noisy_images, decoded_images]):
+            for ax, img in zip(axes, [orig_images, decoded_images]):
                 curr_img = img[i].detach().to(torch.device('cpu'))        
                 if unnormalizer is not None:
                     curr_img = unnormalizer(curr_img)
@@ -118,6 +119,19 @@ def plot_generated_images(data_loader, model, device, file = 'DAE.pth',
                     ax[i].imshow(curr_img)
                 else:
                     ax[i].imshow(curr_img.view((image_height, image_width)), cmap='binary')
+        '''
+        for i in range(n_images):
+            for ax, img in zip(axes, [noisy_images, decoded_images]):
+                curr_img = img[i].detach().to(torch.device('cpu'))        
+                if unnormalizer is not None:
+                    curr_img = unnormalizer(curr_img)
+
+                if color_channels > 1:
+                    curr_img = np.transpose(curr_img, (1, 2, 0))
+                    ax[i].imshow(curr_img)
+                else:
+                    ax[i].imshow(curr_img.view((image_height, image_width)), cmap='binary')
+        
     elif modeltype == 'GAE':
         for i in range(n_images):
             for ax, img in zip(axes, [orig_images, decoded_images]):
