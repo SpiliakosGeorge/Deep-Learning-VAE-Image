@@ -19,7 +19,7 @@ Firstly we use a VAE model trained for denoising images with Gaussian noise and 
 	- Consists of methods used to calculate the model parameters according to `(input_dimension + 2 * padding)/stride + 1` formula.
 7. VAE.py
 	- Is a subclass of Autoencoder.py for approprietly modifying a generic Convolutional Autoencoder to a Convolutional Variational Autoencoder, also contains encoding_fn which is a class method for easy access to the latent representation of VAE.
-8. Visual.ipynb
+8. Report.ipynb
 	- Is the presentation of the results of the inferences.
 
 ## Requirements
